@@ -1,59 +1,41 @@
 import os
-from dotenv import load_dotenv  # For loading environment variables from .env file
-import mysql.connector  # MySQL connector to interact with the database
+# from dotenv import load_dotenv  # For loading environment variables from .env file
+import mysql  # MySQL connector to interact with the database
 from mysql.connector import Error  # Error handling for MySQL operations
-
+import pandas as pd
 load_dotenv()  # Load environment variables like DB credentials
-
+# Import values from csv(s) to df(s)
+persons_df = pd.read_csv('persons.csv')
+education_df = pd.read_csv('education.csv')
+experience_df = pd.read_csv('experience.csv')
 # Function to establish a connection to the MySQL database
 def create_connection():
     connection = None
     try:
         # Attempt to connect using environment variables for DB credentials
         connection = mysql.connector.connect(
-            host=os.getenv('DB_HOST'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASS'),
-            database=os.getenv('hirehelper')
+            host='34.44.42.132',
+            user='hirehelper',
+            password='@(dMUY3QLdVm.Fs{',
+            database='hirehelper'
         )
         print("Successfully connected to the database")
     except Error as e:
         # Print detailed error information if connection fails
         print(f"Error connecting to MySQL: {e}")
     return connection
-
-# Function to create the 'contacts' table if it doesn't already exist
-def create_contacts(connection):
+## CREATE TABLES
+# Function to create the 'persons' table if it doesn't already exist
+def create_person(connection):
     create_table_query = """
-    CREATE TABLE IF NOT EXISTS contacts (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+    CREATE TABLE IF NOT EXISTS person (
+        person_id INT AUTO_INCREMENT PRIMARY KEY,
+        education_id INT FOREIGN KEY,
         name VARCHAR(255) NOT NULL,
-        grad INT,
-        company VARCHAR(255),
+        title VARCHAR(255),
         email VARCHAR(255),
         linkedin VARCHAR(255),
-        title VARCHAR(255)
-    )
-    """
-    try:
-        # Execute the table creation query
-        with connection.cursor() as cursor:
-            cursor.execute(create_table_query)
-            connection.commit()
-            print("Table 'contacts' created successfully")
-    except Error as e:
-        print(f"Error creating table: {e}")
-
-# Function to create the 'users' table if it doesn't already exist
-def create_users(connection):
-    create_table_query = """
-    CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        major VARCHAR(255),
-        grad INT,
-        email VARCHAR(255),
-        linkedin VARCHAR(255)
+        is_alumni bool
     )
     """
     try:
@@ -64,13 +46,71 @@ def create_users(connection):
     except Error as e:
         print(f"Error creating table: {e}")
 
-# Function to add a new user to the 'users' table
-def add_user(connection, name, major, grade, email, linkedin):
+def create_education(connection):
+    create_table_query = """
+    CREATE TABLE IF NOT EXISTS education (
+        education_id INT AUTO_INCREMENT PRIMARY KEY,
+        person_id INT FOREIGN KEY
+        school_name VARCHAR(255),
+        degree VARCHAR(255),
+        major VARCHAR(255),
+        start_date date
+        end_date date
+    )
+    """
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(create_table_query)
+            connection.commit()
+            print("Table 'education' created successfully")
+    except Error as e:
+        print(f"Error creating table: {e}")
+        
+
+def create_experience(connection):
+    create_table_query = """
+    CREATE TABLE IF NOT EXISTS experience (
+        experience_id INT AUTO_INCREMENT PRIMARY KEY
+        person_id INT FOREIGN KEY
+        company_name VARCHAR(255),
+        location VARCHAR(255),
+        position VARCHAR(255),
+        start_date date
+        end_date date
+    )
+    """
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(create_table_query)
+            connection.commit()
+            print("Table 'experience' created successfully")
+    except Error as e:
+        print(f"Error creating table: {e}")
+        
+def create_connections(connection):
+    create_table_query = """
+    CREATE TABLE IF NOT EXISTS connections (
+        connection_id INT AUTO_INCREMENT PRIMARY KEY
+        person_id INT FOREIGN KEY
+        connection_user_id INT FOREIGN KEY
+    )
+    """
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(create_table_query)
+            connection.commit()
+            print("Table 'connections' created successfully")
+    except Error as e:
+        print(f"Error creating table: {e}")    
+    
+## ADD TO TABLES
+# Function to add a new user to the 'persons' table
+def add_person(connection, name, title, email, linkedin, is_alumni):
     query = """
-    INSERT INTO users (name, major, grade, email, linkedin)
+    INSERT INTO persons (name, title, email, linkedin, is_alumni)
     VALUES (%s, %s, %s, %s, %s)
     """
-    values = (name, major, grade, email, linkedin)
+    values = (name, title, email, linkedin, is_alumni)
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, values)
@@ -78,90 +118,157 @@ def add_user(connection, name, major, grade, email, linkedin):
             print(f"User added with ID: {cursor.lastrowid}")
     except Error as e:
         print(f"Error adding user: {e}")
-
-# Function to add a new contact to the 'contacts' table
-def add_contact(connection, name, grad, company, email, linkedin, title):
+# Function to add a new user to the 'education' table
+def add_education(connection, person_id, school_name, degree, major, start_date, end_date):
     query = """
-    INSERT INTO contacts (name, grad, company, email, linkedin, title)
+    INSERT INTO education (person_id, school_name, degree, major, start_date, end_date)
     VALUES (%s, %s, %s, %s, %s, %s)
     """
-    values = (name, grad, company, email, linkedin, title)
+    values = (person_id, school_name, degree, major, start_date, end_date)
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, values)
             connection.commit()
-            print(f"Contact added with ID: {cursor.lastrowid}")
+            print(f"Education added with ID: {cursor.lastrowid}")
     except Error as e:
-        print(f"Error adding contact: {e}")
+        print(f"Error adding education: {e}")
+        
+        
+# Function to add a new user to the 'experience' table
+def add_experience(connection, person_id, company_name, location, position, start_date, end_date):
+    query = """
+    INSERT INTO experience (person_id, company_name, location, position, start_date, end_date)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    values = (person_id, company_name, location, position, start_date, end_date)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query, values)
+            connection.commit()
+            print(f"User added with ID: {cursor.lastrowid}")
+    except Error as e:
+        print(f"Error adding user: {e}")
+        
+def add_connections(connection, connection_id, person_id, connection_user_id, connection_status):
+    query = """
+    INSERT INTO connections (connection_id, person_id, connection_user_id, connection_status)
+    VALUES (%s, %s, %s, %s)
+    """
+    values = (connection_id, person_id, connection_user_id, connection_status)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query, values)
+            connection.commit()
+            print(f"Connection added with ID: {cursor.lastrowid}")
+    except Error as e:
+        print(f"Error adding connection: {e}")
 
-# Function to retrieve and display all users from the 'users' table
-def view_users(connection):
-    query = "SELECT * FROM users"
+
+# Function to retrieve and display all users from the 'person' table
+def view_person(connection):
+    query = "SELECT * FROM person"
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
             results = cursor.fetchall()
             if not results:
-                print("No users found in the database.")
+                print("No persons found in the database.")
             else:
-                for user in results:
-                    print(f"\nID: {user[0]}")
-                    print(f"Name: {user[1]}")
-                    print(f"Major: {user[2]}")
-                    print(f"Grad: {user[3]}")
-                    print(f"Email: {user[4]}")
-                    print(f"LinkedIn: {user[5]}")
+                for person in results:
+                    print(f"\nID: {person[0]}")
+                    print(f"Education ID: {person[1]}")
+                    print(f"Name: {person[2]}")
+                    print(f"Email: {person[3]}")
+                    print(f"is_alumni: {person[4]}")
+                    print(f"Title: {person[5]}")
     except Error as e:
         print(f"Error retrieving users: {e}")
 
-# Function to retrieve and display all contacts from the 'contacts' table
-def view_contacts(connection):
-    query = "SELECT * FROM contacts"
+# Function to retrieve and display all educations from the 'education' table
+def view_education(connection):
+    query = "SELECT * FROM education"
     try:
         with connection.cursor() as cursor:
             cursor.execute(query)
             results = cursor.fetchall()
             if not results:
-                print("No contacts found in the database.")
+                print("No educations found in the database.")
             else:
-                for contact in results:
-                    print(f"\nID: {contact[0]}")
-                    print(f"Name: {contact[1]}")
-                    print(f"Grad: {contact[2]}")
-                    print(f"Company: {contact[3]}")
-                    print(f"Email: {contact[4]}")
-                    print(f"LinkedIn: {contact[5]}")
-                    print(f"Title: {contact[6]}")
+                for education in results:
+                    print(f"\nEducation ID: {education[0]}")
+                    print(f"Person ID: {education[1]}")
+                    print(f"School Name: {education[2]}")
+                    print(f"Degree: {education[3]}")
+                    print(f"Major: {education[4]}")
+                    print(f"Start Date: {education[5]}")
+                    print(f"End Date: {education[6]}")
     except Error as e:
-        print(f"Error retrieving contacts: {e}")
+        print(f"Error retrieving education: {e}")
 
-# Function to delete a user by their ID from the 'users' table
-def delete_user(connection, id):
-    query = "DELETE FROM users WHERE id = %s"
+def view_connections(connection):
+    query = "SELECT * FROM connections"
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            results = cursor.fetchall()
+            if not results:
+                print("No connections found in the database.")
+            else:
+                for conn in results:
+                    print(f"\nConnection ID: {conn[0]}")
+                    print(f"Person ID: {conn[1]}")
+                    print(f"Connection User ID: {conn[2]}")
+                    print(f"Connection Status: {conn[3]}")
+    except Error as e:
+        print(f"Error retrieving education: {e}")
+
+def view_experience(connection):
+    query = "SELECT * FROM experience"
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            results = cursor.fetchall()
+            if not results:
+                print("No experiences found in the database.")
+            else:
+                for exp in results:
+                    print(f"\nExperience ID: {exp[0]}")
+                    print(f"Person ID: {exp[1]}")
+                    print(f"Company: {exp[2]}")
+                    print(f"Location: {exp[3]}")
+                    print(f"Position: {exp[4]}")
+                    print(f"Start Date: {exp[5]}")
+                    print(f"End Date: {exp[6]}")
+    except Error as e:
+        print(f"Error retrieving education: {e}")
+
+# Function to delete a person by their ID from the 'person' table
+def delete_person(connection, id):
+    query = "DELETE FROM person WHERE id = %s"
     value = (id,)
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, value)
             connection.commit()
             if cursor.rowcount:
-                print("User deleted successfully!")
+                print("Person deleted successfully!")
             else:
-                print("No user found with that ID.")
+                print("No person found with that ID.")
     except Error as e:
-        print(f"Error deleting user: {e}")
+        print(f"Error deleting person: {e}")
 
-# Function to delete a contact by their ID from the 'contacts' table
-def delete_contacts(connection, id):
-    query = "DELETE FROM contacts WHERE id = %s"
+# Function to delete a education by their ID from the 'education' table
+def delete_education(connection, id):
+    query = "DELETE FROM education WHERE id = %s"
     value = (id,)
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, value)
             connection.commit()
             if cursor.rowcount:
-                print("Contact deleted successfully!")
+                print("education deleted successfully!")
             else:
-                print("No contact found with that ID.")
+                print("No education found with that ID.")
     except Error as e:
         print(f"Error deleting contact: {e}")
 
@@ -170,10 +277,42 @@ def main():
     connection = create_connection()  
     if connection is None:
         return  # Exit if connection fails
+    create_person(connection)  # Ensure 'person' table exists
+    create_education(connection) # Ensure 'education' table exists
+    create_experience(connection)  # Ensure 'experience' table exists
+    ## ADD REAL VALUES FROM IMPORTED CSVs
+    # Iterate over each row in persons data frame and add to persons
+    for index, row in persons_df.iterrows():
+        add_person(connection,
+                    row['name'],
+                    row['title'],
+                    row['email'],
+                    row['linkedin'],
+                    row['is_alumni'],)
+    # Iterate over each row in education data frame and add to education
+    for index, row in education_df.iterrows():
+        add_education(connection,
+                    row['person_id'],
+                    row['company_name'],
+                    row['location'],
+                    row['position'],
+                    row['start_date'],
+                    row['end_date'],)
+    # Iterate over each row in experience data frame and add to experience
+    for index, row in experience_df.iterrows():
+        add_experience(connection,
+                    row['person_id'],
+                    row['school_name'],
+                    row['degree'],
+                    row['major'],
+                    row['start_date'],
+                    row['end_date'],)
     
-    create_contacts(connection)  # Ensure 'contacts' table exists
-    create_users(connection)  # Ensure 'users' table exists
-    
+    view_person(connection)
+    view_education(connection)
+    view_experience(connection)
+    view_connections(connection)
+
     connection.close()  
 
 if __name__ == "__main__":

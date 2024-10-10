@@ -1,6 +1,6 @@
 # HireHelper
 
-##Data Model Description
+## Data Model Description
 ### Users Table
 - **person_id (PK)**: A unique identifier for each individual in the system.
 - **education_id (FK)**: A foreign key linking to the user's education in the *Education* table.

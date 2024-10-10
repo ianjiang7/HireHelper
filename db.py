@@ -3,7 +3,7 @@ import os
 import mysql  # MySQL connector to interact with the database
 from mysql.connector import Error  # Error handling for MySQL operations
 import pandas as pd
-load_dotenv()  # Load environment variables like DB credentials
+# load_dotenv()  # Load environment variables like DB credentials
 # Import values from csv(s) to df(s)
 persons_df = pd.read_csv('persons.csv')
 education_df = pd.read_csv('education.csv')

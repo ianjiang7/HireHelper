@@ -2,15 +2,16 @@
 
 #Data Model Description
 ### Users Table
-- **user_id (PK)**: A unique identifier for each user in the system.
+- **person_id (PK)**: A unique identifier for each individual in the system.
 - **education_id (FK)**: A foreign key linking to the user's education in the *Education* table.
 - **name**: The full name of the user.
 - **email**: The user's email address.
-- **password**: The user's password, used for authentication purposes.
+- **is_alumni**: A boolean indicating whether the individual is an alumni of an educational institution.
+- **title**: The current job title or designation of the individual.
 
 ### Education Table
 - **education_id (PK)**: A unique identifier for each education entry.
-- **user_id (FK)**: A foreign key linking to the user who possesses this educational background.
+- **person_id (FK)**: A foreign key linking to the person who possesses this educational background.
 - **school_name**: The name of the institution where the user obtained their education.
 - **degree**: The type of degree earned (e.g., Bachelor's, Master's).
 - **major**: The major or field of study.
@@ -19,13 +20,13 @@
 
 ### Connections Table
 - **connection_id (PK)**: A unique identifier for each connection entry.
-- **user_id (FK)**: A foreign key linking to the user who is initiating the connection.
+- **person_id (FK)**: A foreign key linking to the individual who is initiating the connection.
 - **connection_user_id (FK)**: A foreign key linking to the user who is on the receiving end of the connection.
 - **connection_status**: Represents the status of the connection (e.g., pending, accepted, declined).
 
 ### Experience Table
 - **experience_id (PK)**: A unique identifier for each work experience entry.
-- **user_id (FK)**: A foreign key linking to the user who holds the work experience.
+- **person_id (FK)**: A foreign key linking to the individual who holds the work experience.
 - **company_name**: The name of the company where the user gained this experience.
 - **location**: The location of the company.
 - **position**: The role or job title of the user at the company.

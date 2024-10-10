@@ -1,7 +1,46 @@
 # HireHelper
-## Database Design
-Using SQL, our data model consists of two tables, a users table and a contacts table. The users table is used to contain personal user data with columns including: id, name, major, graduation year, email, and linkedin. The contacts table is used to contain the information we will scrape from alumni. The columns include id, name, graduation year, current company, email, LinkedIn, and job position/title.
 
-We chose SQL because we believed the data we store is very structured. The rigid columns that each data point will have like name and graduation year won't change so we will benefit the most by using SQL.
+#Data Model Description
+### Users Table
+- **user_id (PK)**: A unique identifier for each user in the system.
+- **education_id (FK)**: A foreign key linking to the user's education in the *Education* table.
+- **name**: The full name of the user.
+- **email**: The user's email address.
+- **password**: The user's password, used for authentication purposes.
 
+### Education Table
+- **education_id (PK)**: A unique identifier for each education entry.
+- **user_id (FK)**: A foreign key linking to the user who possesses this educational background.
+- **school_name**: The name of the institution where the user obtained their education.
+- **degree**: The type of degree earned (e.g., Bachelor's, Master's).
+- **major**: The major or field of study.
+- **start_date**: The date when the education program started.
+- **end_date**: The date when the education program ended (or is expected to end).
+
+### Connections Table
+- **connection_id (PK)**: A unique identifier for each connection entry.
+- **user_id (FK)**: A foreign key linking to the user who is initiating the connection.
+- **connection_user_id (FK)**: A foreign key linking to the user who is on the receiving end of the connection.
+- **connection_status**: Represents the status of the connection (e.g., pending, accepted, declined).
+
+### Experience Table
+- **experience_id (PK)**: A unique identifier for each work experience entry.
+- **user_id (FK)**: A foreign key linking to the user who holds the work experience.
+- **company_name**: The name of the company where the user gained this experience.
+- **location**: The location of the company.
+- **position**: The role or job title of the user at the company.
+- **start_date**: The start date of the work experience.
+- **end_date**: The end date of the work experience (if applicable).
+
+### Relationships
+- **Users to Education (One-to-Many)**: A user can have multiple education entries, but each education entry belongs to one user.
+- **Users to Connections (Self-Referencing One-to-Many)**: A user can be connected to multiple other users, and each connection involves two users (one initiating and one receiving).
+- **Users to Experience (One-to-Many)**: A user can have multiple work experiences, and each experience is linked to one user.
+
+The model is designed to store user profiles, including their education history, work experience, and social connections within the platform. This structure allows for flexibility in tracking multiple education and experience entries per user and enables users to form connections with others on the platform.
+
+# Why SQL
+SQL is ideal for this project because it handles structured data with well-defined relationships between entities (like Users, Education, Experience, and Connections). It ensures data integrity through foreign keys, supports complex queries, and offers scalability and performance. Additionally, SQL databases come with a mature ecosystem, making them a strong choice for managing user profiles and connections.
+
+# Instructions on how to set up database
 Intructions: To set up our database, run the create_connection() to establish a connection. Then run the create_contacts or create_users function to create the respective tables. To add rows into the table, use the respective add functions.

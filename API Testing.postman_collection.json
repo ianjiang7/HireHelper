@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "1f45833a-49dd-431e-8c13-77d043d66e99",
+		"name": "API Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39097805"
+	},
+	"item": [
+		{
+			"name": "person",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/person/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"person",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "person/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/person/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"person",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "person/-10",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/person/-10",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"person",
+						"-10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/person/?name=testname&title=testtitle&industry=testindustry&linkedin=testlinkedin",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/person/1714?person_id=1714&name=updatename&title=updatetitle&industry=updateindustry&linkedin=updatelinkedin",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"person",
+						"1714"
+					],
+					"query": [
+						{
+							"key": "person_id",
+							"value": "1714"
+						},
+						{
+							"key": "name",
+							"value": "updatename"
+						},
+						{
+							"key": "title",
+							"value": "updatetitle"
+						},
+						{
+							"key": "industry",
+							"value": "updateindustry"
+						},
+						{
+							"key": "linkedin",
+							"value": "updatelinkedin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/person/?name=testname3&title=testtitle&industry=testindustry&linkedin=testlinkedin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/person/?name=testname3&title=testtitle&industry=testindustry&linkedin=testlinkedin",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"person",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "testname3"
+						},
+						{
+							"key": "title",
+							"value": "testtitle"
+						},
+						{
+							"key": "industry",
+							"value": "testindustry"
+						},
+						{
+							"key": "linkedin",
+							"value": "testlinkedin"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

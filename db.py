@@ -5,7 +5,7 @@ from mysql.connector import Error  # Error handling for MySQL operations
 import pandas as pd
 # load_dotenv()  # Load environment variables like DB credentials
 # Import values from csv(s) to df(s)
-persons_df = pd.read_csv('persons.csv')
+persons_df = pd.read_csv('nyu_alumni_names_titles_industries_links.csv')
 education_df = pd.read_csv('education.csv')
 experience_df = pd.read_csv('experience.csv')
 # Function to establish a connection to the MySQL database
@@ -16,7 +16,7 @@ def create_connection():
         connection = mysql.connector.connect(
             host='34.44.42.132',
             user='hirehelper',
-            password='@(dMUY3QLdVm.Fs{',
+            password='hirehelper123!',
             database='hirehelper'
         )
         print("Successfully connected to the database")
@@ -30,19 +30,17 @@ def create_person(connection):
     create_table_query = """
     CREATE TABLE IF NOT EXISTS person (
         person_id INT AUTO_INCREMENT PRIMARY KEY,
-        education_id INT FOREIGN KEY,
         name VARCHAR(255) NOT NULL,
         title VARCHAR(255),
-        email VARCHAR(255),
-        linkedin VARCHAR(255),
-        is_alumni bool
+        industry VARCHAR(255),
+        linkedin VARCHAR(255)
     )
     """
     try:
         with connection.cursor() as cursor:
             cursor.execute(create_table_query)
             connection.commit()
-            print("Table 'users' created successfully")
+            print("Table 'person' created successfully")
     except Error as e:
         print(f"Error creating table: {e}")
 
@@ -105,12 +103,12 @@ def create_connections(connection):
     
 ## ADD TO TABLES
 # Function to add a new user to the 'persons' table
-def add_person(connection, name, title, email, linkedin, is_alumni):
+def add_person(connection, name, title, industry, linkedin,):
     query = """
-    INSERT INTO persons (name, title, email, linkedin, is_alumni)
-    VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO person (name, title, industry, linkedin)
+    VALUES (%s, %s, %s, %s)
     """
-    values = (name, title, email, linkedin, is_alumni)
+    values = (name, title, industry, linkedin)
     try:
         with connection.cursor() as cursor:
             cursor.execute(query, values)
@@ -176,11 +174,10 @@ def view_person(connection):
             else:
                 for person in results:
                     print(f"\nID: {person[0]}")
-                    print(f"Education ID: {person[1]}")
-                    print(f"Name: {person[2]}")
-                    print(f"Email: {person[3]}")
-                    print(f"is_alumni: {person[4]}")
-                    print(f"Title: {person[5]}")
+                    print(f"Name: {person[1]}")
+                    print(f"Title: {person[2]}")
+                    print(f"Industry: {person[3]}")
+                    print(f"LinkedIn: {person[4]}")
     except Error as e:
         print(f"Error retrieving users: {e}")
 
@@ -278,40 +275,40 @@ def main():
     if connection is None:
         return  # Exit if connection fails
     create_person(connection)  # Ensure 'person' table exists
-    create_education(connection) # Ensure 'education' table exists
-    create_experience(connection)  # Ensure 'experience' table exists
+    # create_education(connection) # Ensure 'education' table exists
+    # create_experience(connection)  # Ensure 'experience' table exists
     ## ADD REAL VALUES FROM IMPORTED CSVs
     # Iterate over each row in persons data frame and add to persons
     for index, row in persons_df.iterrows():
         add_person(connection,
-                    row['name'],
-                    row['title'],
-                    row['email'],
-                    row['linkedin'],
-                    row['is_alumni'],)
-    # Iterate over each row in education data frame and add to education
-    for index, row in education_df.iterrows():
-        add_education(connection,
-                    row['person_id'],
-                    row['company_name'],
-                    row['location'],
-                    row['position'],
-                    row['start_date'],
-                    row['end_date'],)
-    # Iterate over each row in experience data frame and add to experience
-    for index, row in experience_df.iterrows():
-        add_experience(connection,
-                    row['person_id'],
-                    row['school_name'],
-                    row['degree'],
-                    row['major'],
-                    row['start_date'],
-                    row['end_date'],)
+                    row['Name'],
+                    row['Title'],
+                    row['Industry'],
+                    row['Links'],
+                    )
+    # # Iterate over each row in education data frame and add to education
+    # for index, row in experience_df.iterrows():
+    #     add_experience(connection,
+    #                 index,
+    #                 row['company_name'],
+    #                 row['location'],
+    #                 row['position'],
+    #                 row['start_date'],
+    #                 row['end_date'],)
+    # # Iterate over each row in experience data frame and add to experience
+    # for index, row in education_df.iterrows():
+    #     add_education(connection,
+    #                 index,
+    #                 row['school_name'],
+    #                 row['degree'],
+    #                 row['major'],
+    #                 row['start_date'],
+    #                 row['end_date'],)
     
     view_person(connection)
-    view_education(connection)
-    view_experience(connection)
-    view_connections(connection)
+    # view_education(connection)
+    # view_experience(connection)
+    # view_connections(connection)
 
     connection.close()  
 

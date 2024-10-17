@@ -44,4 +44,19 @@ The model is designed to store user profiles, including their education history,
 SQL is ideal for this project because it handles structured data with well-defined relationships between entities (like Users, Education, Experience, and Connections). It ensures data integrity through foreign keys, supports complex queries, and offers scalability and performance. Additionally, SQL databases come with a mature ecosystem, making them a strong choice for managing user profiles and connections.
 
 # Instructions on how to set up database
-Intructions: To set up our database, run the create_connection() to establish a connection. Then run the create_contacts or create_users function to create the respective tables. To add rows into the table, use the respective add functions.
+To set up our database, run the create_connection() to establish a connection. Then run the create_contacts or create_users function to create the respective tables. To add rows into the table, use the respective add functions.
+
+# Instructions to run API application
+First, ensure all dependencies are downloaded by running:
+```pip install -r requirements.txt```
+Next, run the following command:
+```fastapi dev api.py```
+Now, you can interact with the API with the following endpoints:
+- GET /person/ to get all people
+- GET /person/{person_id} to retrieve a specific person
+- POST /person/ to add a person
+- PUT /person/{person_id} to a update a specific person
+- DELETE /person/{person_id} to delete a person
+
+To use Postman, run the terminal command and enter any API requests into the textbox.
+
